@@ -8,13 +8,13 @@ namespace Volan_register
 {
     class Volan
     {
-        private List<Bus> buses = new List<Bus>();
+        private List<Bus> buses = new List<Bus>();    
 
         public Bus this[int index]
         {
             get
             {
-                if (index <= 0 && index < buses.Count)
+                if (index >= 0 && index <= buses.Count)
                     return buses[index];
                 throw new Exception(string.Format("Nincs {0} bus", index));
             }
@@ -32,27 +32,26 @@ namespace Volan_register
             }
         }
 
-        public void AddBus(string model, byte age, double factoryConsumption, string licencePlateNumber)
+        public void AddBus(string model, int age, double factoryConsumption, string licencePlateNumber)
         {
             Bus newBus = new Bus(model, age, factoryConsumption, licencePlateNumber);
-            if (buses.Contains(newBus) && newBus.Model == model && newBus.Age < model.Length)
-                throw new Exception("Van már ilyen rendszámű, azonos modellű fiatalabb busz!");
+            if (buses.Contains(newBus) || buses.Any(b => b.Model == model && b.Age < age))
+                throw new Exception("Van már ilyen rendszámú, azonos modellű, fiatalabb busz!");           
             buses.Add(newBus);
         } 
 
-        public Bus MaxRealConsumption
+        public Bus BusWithMinRealConsumption
         {
             get
             {
-                Bus maxBus = buses[0];
+                Bus minBus = buses[0];
                 foreach (Bus bus in buses)
                 {
-                    if (bus.RealConsumption > maxBus.RealConsumption)
-                        maxBus = bus;
+                    if (bus.RealConsumption < minBus.RealConsumption)
+                        minBus = bus;
                 }
-                return maxBus;
+                return minBus;
             }
         }
-       
     }
 }

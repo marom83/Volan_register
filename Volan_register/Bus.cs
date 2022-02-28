@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Volan_register
 {
-    class Bus
+    class Bus : IEquatable<Bus>
     {
         private string model;
 
@@ -15,6 +15,7 @@ namespace Volan_register
             get { return model; }
             private set
             {
+                
                 if (value == null)
                     throw new Exception("Nem lehet a busz modelljének a neve nulla!");
                 if (value.Length < 2)
@@ -23,9 +24,9 @@ namespace Volan_register
             }
         }
 
-        private byte age;
+        private int age;
 
-        public byte Age
+        public int Age
         {
             get { return age; }
             set {
@@ -71,13 +72,15 @@ namespace Volan_register
 
         public double RealConsumption
         {
-            get { return RealConsumption; }
-            set {
-                RealConsumption = FactoryConsumption * ((1 + age) / 20);
+            get { 
+                return FactoryConsumption * ((1 + age) / 20.0); 
+            }
+            set { 
+                FactoryConsumption = value / ((1 + age) / 20.0); 
             }
         }
 
-        public Bus(string model, byte age, double factoryConsumption, string licencePlateNumber)
+        public Bus(string model, int age, double factoryConsumption, string licencePlateNumber)
         {
             Model = model;
             Age = age;
@@ -101,8 +104,20 @@ namespace Volan_register
             sb.AppendFormat("Modell: {0}\n", Model);
             sb.AppendFormat("Életkor: {0}\n", Age);
             sb.AppendFormat("Gyári fogyasztás: {0}\n", FactoryConsumption);
-            sb.AppendFormat("Rendszám: {0} Ft\n", LicencePlateNumber);
+            sb.AppendFormat("Rendszám: {0}\n", LicencePlateNumber);
             return sb.ToString();
+        }
+
+        public bool Equals(Bus other)
+        {
+            if (this.licencePlateNumber == other.licencePlateNumber)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
